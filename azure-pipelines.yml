@@ -3,7 +3,6 @@ trigger:
 
 pool:
   name: "Default"
-  vmImage: 'windows-latest'
 
 variables:
   solution: '**/*.sln'
@@ -24,16 +23,15 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
-- task: NuGetCommand@2
+- task: DotNetCoreCLI@2
   inputs:
     command: 'pack'
     packagesToPack: '**/*.csproj'
-    versioningScheme: 'off'
+    versioningScheme: 'byBuildNumber'
 
-- task: NuGetCommand@2
+- task: DotNetCoreCLI@2
   inputs:
     command: 'push'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
     nuGetFeedType: 'internal'
     publishVstsFeed: '8f67cdc5-ca6d-44c7-aa9e-39b5899f4286/c6c55122-1817-4ec8-bd23-4204f1105f54'
-    allowPackageConflicts: true
